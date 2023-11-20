@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthHub Patient Monitor</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        /* Add your styles here or link an external stylesheet */
+        /* ... */
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+
+        .calendar-day {
+            text-align: center;
+            padding: 5px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><i class="fa fa-heartbeat"></i> HealthHub Patient Monitor</h1>
+    </header>
+
+    <!-- General Information Section -->
+    <section>
+        <h2>Welcome to HealthHub</h2>
+        <p>HealthHub Patient Monitoring System provides real-time patient data monitoring and seamless communication between patients, doctors, and engineers.</p>
+        <p>Hospital Name: [Your Hospital Name]</p>
+        <p>Address: [Hospital Address]</p>
+        <p>Phone: [Hospital Phone Number]</p>
+        <p>Email: [Hospital Email]</p>
+    </section>
+
+    <div id="toggleButtons">
+        <button onclick="authenticateAndToggle('patient')">Patient Portal</button>
+        <button onclick="authenticateAndToggle('doctor')">Doctor Portal</button>
+        <button onclick="authenticateAndToggle('engineer')">Engineer Portal</button>
+    </div>
+
+    <div id="patientPortal" style="display: none;">
+        <!-- Patient Information Section -->
+        <section>
+            <h2><i class="fa fa-user"></i> Personal Information</h2>
+            <p>Patient ID: <input type="text" value="789012" readonly></p>
+            <p>Name: <input type="text" value="Jane Doe" readonly></p>
+            <p>Phone Number: <input type="tel" value="+254-712-345678" readonly></p>
+            <p>Email Address: <input type="email" value="jane.doe@example.com" readonly></p>
+            <!-- Add other patient information fields here -->
+
+            <!-- Appointment Section -->
+            <h2><i class="fa fa-calendar"></i> Appointments</h2>
+            <p>Upcoming Appointments: <input type="date" id="appointmentDate"></p>
+            <button onclick="scheduleAppointment()">Schedule New Appointment</button>
+        </section>
+
+        <!-- Doctor's Message Section -->
+        <section>
+            <h2><i class="fa fa-comments"></i> Messages from Your Doctor</h2>
+            <div id="doctorMessage">
+                <!-- Doctor's messages will be dynamically added here -->
+            </div>
+            <textarea id="patientReply" placeholder="Reply to your doctor"></textarea>
+            <button onclick="sendPatientReply()">Send Reply</button>
+        </section>
+    </div>
+
+    <div id="doctorPortal" style="display: none;">
+        <!-- Doctor's Portal Content Goes Here -->
+        <section>
+            <h2>Doctor's Portal</h2>
+            <label for="doctorName">Your Name:</label>
+            <input type="text" id="doctorName" placeholder="Enter your name">
+            <label for="doctorContact">Contact Information:</label>
+            <input type="text" id="doctorContact" placeholder="Enter your contact information">
+            <button onclick="editPatientData()">Edit Patient Data</button>
+            <button onclick="fetchPatientHealthInfo()">Fetch Patient Health Info</button>
+
+            <!-- Show all patient fields in the doctor view -->
+            <h2>Patient Information</h2>
+            <p>Patient ID: <input type="text" value="789012" readonly></p>
+            <p>Name: <input type="text" value="Jane Doe" readonly></p>
+            <p>Phone Number: <input type="tel" value="+254-712-345678" readonly></p>
+            <p>Email Address: <input type="email" value="jane.doe@example.com" readonly></p>
+            <!-- Add other patient information fields here -->
+
+            <!-- Health Information Section -->
+            <h2>Health Information</h2>
+            <p>Fetal Heart Rate: <span id="fetalHeartRate"></span> bpm</p>
+            <p>Uterine Contractions: <span id="uterineContractions"></span> per hour</p>
+            <p>Contractions Pressure: <span id="contractionsPressure"></span> mmHg</p>
+            <p>Fetched Timestamp: <span id="healthInfoTimestamp"></span></p>
+            <!-- Add other health information fields here -->
+
+            <!-- Patient History Section -->
+            <h2>Patient History</h2>
+            <p>Past Surgeries: <input type="text" value="C-section" readonly></p>
+            <p>Allergies: <input type="text" value="None" readonly></p>
+            <p>Current Medications: <input type="text" value="Prenatal vitamins" readonly></p>
+
+            <!-- Messages from Engineer Section -->
+            <h2>Messages from Engineer</h2>
+            <div id="engineerMessage">
+                <!-- Engineer's messages will be dynamically added here -->
+            </div>
+            <textarea id="doctorReplyToEngineer" placeholder="Reply to the engineer"></textarea>
+            <button onclick="sendDoctorReplyToEngineer()">Send Reply</button>
+        </section>
+
+        <!-- Messaging and Appointments Section -->
+        <section>
+            <h2>Messages to Patient</h2>
+            <textarea id="doctorMessageToPatient" placeholder="Compose a message to the patient"></textarea>
+            <button onclick="sendMessageToPatient()">Send Message</button>
+
+            <!-- Appointments Section -->
+            <h2>Appointments</h2>
+            <div class="calendar">
+                <div class="calendar-day">Sun</div>
+                <div class="calendar-day">Mon</div>
+                <div class="calendar-day">Tue</div>
+                <div class="calendar-day">Wed</div>
+                <div class="calendar-day">Thu</div>
+                <div class="calendar-day">Fri</div>
+                <div class="calendar-day">Sat</div>
+                <!-- Dynamically generate the calendar days here -->
+            </div>
+            <button onclick="adjustAppointments()">Adjust Appointments</button>
+        </section>
+    </div>
+
+    <div id="engineerPortal" style="display: none;">
+        <!-- Engineer's Portal Content Goes Here -->
+        <section>
+            <h2>Engineer's Portal</h2>
+            <label for="engineerName">Your Name:</label>
+            <input type="text" id="engineerName" placeholder="Enter your name">
+            <label for="engineerContact">Contact Information:</label>
+            <input type="text" id="engineerContact" placeholder="Enter your contact information">
+            <button onclick="fetchDeviceData()">Fetch Device Data</button>
+            <button onclick="makeTechnicalAdjustments()">Make Technical Adjustments</button>
+            <button onclick="communicateWithDoctor()">Communicate with Doctor</button>
+            <!-- Add engineer-specific functionality here -->
+
+            <!-- Display Collected Patient Data -->
+            <h2>Collected Patient Data</h2>
+            <div id="collectedPatientData">
+                <!-- Collected patient data will be dynamically added here -->
+            </div>
+
+            <!-- Display Device Data -->
+            <h2>Device Data</h2>
+            <div id="deviceData">
+                <!-- Device data will be dynamically added here -->
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <!-- Footer Section -->
+        <p>Contact Information</p>
+        <p>Phone: +254-41-222-4433</p>
+        <p>Email: info@healthhub.com</p>
+        <p>Address: HealthHub Towers, Wellness Street, HealthCity, Country</p>
+    </footer>
+
+    <script>
+        let currentUser = null; // To store the current user type ('patient', 'doctor', or 'engineer')
+
+        function authenticateAndToggle(viewType) {
+            const password = prompt(`Enter ${viewType === 'patient' ? 'patient' : (viewType === 'doctor' ? 'doctor' : 'engineer')} password:`);
+
+            if (viewType === 'patient' && password === 'patient') {
+                currentUser = 'patient';
+            } else if (viewType === 'doctor' && password === 'doctor') {
+                currentUser = 'doctor';
+            } else if (viewType === 'engineer' && password === 'engineer') {
+                currentUser = 'engineer';
+            } else {
+                alert('Authentication failed. Incorrect password.');
+                return;
+            }
+
+            toggleViews();
+        }
+
+        function toggleViews() {
+            const patientPortal = document.getElementById('patientPortal');
+            const doctorPortal = document.getElementById('doctorPortal');
+            const engineerPortal = document.getElementById('engineerPortal');
+
+            if (currentUser === 'patient') {
+                patientPortal.style.display = 'block';
+                doctorPortal.style.display = 'none';
+                engineerPortal.style.display = 'none';
+            } else if (currentUser === 'doctor') {
+                patientPortal.style.display = 'none';
+                doctorPortal.style.display = 'block';
+                engineerPortal.style.display = 'none';
+            } else if (currentUser === 'engineer') {
+                patientPortal.style.display = 'none';
+                doctorPortal.style.display = 'none';
+                engineerPortal.style.display = 'block';
+            }
+        }
+
+        function scheduleAppointment() {
+            const appointmentDate = document.getElementById('appointmentDate').value;
+            alert(`Appointment scheduled for ${appointmentDate} successfully!`);
+        }
+
+        function editPatientData() {
+            alert('Editing patient data...');
+            // Implement the logic for editing patient data here
+        }
+
+        function fetchPatientHealthInfo() {
+            // Simulating fetching health information from a server/database
+            const currentTimestamp = new Date().toLocaleString();
+            const fetalHeartRate = 150; // Example value, replace with actual data
+            const uterineContractions = 2; // Example value, replace with actual data
+            const contractionsPressure = 80; // Example value, replace with actual data
+            document.getElementById('fetalHeartRate').innerText = fetalHeartRate;
+            document.getElementById('uterineContractions').innerText = uterineContractions;
+            document.getElementById('contractionsPressure').innerText = contractionsPressure;
+            document.getElementById('healthInfoTimestamp').innerText = currentTimestamp; // Display fetched timestamp
+        }
+
+        function sendPatientReply() {
+            const patientReply = document.getElementById('patientReply').value;
+            document.getElementById('doctorMessage').innerHTML = `<p class="patientMessage"><strong>Your Reply to Doctor:</strong> ${patientReply}</p>`;
+        }
+
+        function sendMessageToPatient() {
+            const messageToPatient = document.getElementById('doctorMessageToPatient').value;
+            document.getElementById('doctorMessage').innerHTML = `<p class="doctorMessage"><strong>Your Message to Patient:</strong> ${messageToPatient}</p>`;
+        }
+
+        function sendDoctorReplyToEngineer() {
+            const doctorReplyToEngineer = document.getElementById('doctorReplyToEngineer').value;
+            document.getElementById('engineerMessage').innerHTML = `<p class="doctorMessage"><strong>Your Reply to Engineer:</strong> ${doctorReplyToEngineer}</p>`;
+        }
+
+        function adjustAppointments() {
+            alert('Adjusting appointments...');
+            // Implement the logic for adjusting appointments here
+        }
+
+        function fetchDeviceData() {
+            // Simulating fetching device data from a server/database
+            const collectedPatientData = "Collected patient data: ..."; // Replace with actual data
+            const deviceData = "Device data: ..."; // Replace with actual data
+            document.getElementById('collectedPatientData').innerText = collectedPatientData;
+            document.getElementById('deviceData').innerText = deviceData;
+        }
+
+        function makeTechnicalAdjustments() {
+            alert('Making technical adjustments...');
+            // Implement the logic for making technical adjustments here
+        }
+
+        function communicateWithDoctor() {
+            const messageToDoctor = prompt('Enter your message to the doctor:');
+            document.getElementById('doctorMessage').innerHTML = `<p class="engineerMessage"><strong>Engineer's Message to Doctor:</strong> ${messageToDoctor}</p>`;
+        }
+    </script>
+</body>
+</html>
